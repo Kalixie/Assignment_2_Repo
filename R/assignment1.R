@@ -136,20 +136,24 @@ ggplot() +
 
 
 ###Statistical Test#####
+# PERMANOVA test used to compare BIN composition of the subfamilies across the countries
 
+# 0/1 Matrix of BINs
 bin_matrix <- embsubbin %>%
   distinct(country, subfamily_name, bin_uri) %>% 
   mutate(present = 1) %>%
   pivot_wider(names_from = bin_uri, values_from = present, values_fill = 0)
 
+# Separating the bin_matrix into the country/sub_family and then BINs to use in the PERMANOVA
 meta <- bin_matrix[, c("country", "subfamily_name")]
 bins_only <- bin_matrix %>% select(-country, -subfamily_name)
 
-
+# Running the PERMANOVA
 permanova_result <- adonis2(bins_only ~ subfamily_name,
                             data = meta,
                             method = "jaccard")
 permanova_result
+
 
 
 
