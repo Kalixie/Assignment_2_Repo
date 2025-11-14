@@ -1,7 +1,12 @@
 #BINF 6890 Assignment #1 --- Nadira Robertson
+#Assignment 2 Edits By: Sabrina Saiphoo
+#Modified the output plots to have scaled axes
+#Adjusted an unused figure to display more information
+#Included a statistical test
 ## Packages used -------
 library(sf)
 library(maps)
+library(vegan)
 library(tidyverse)
 theme_set(theme_light())
 
@@ -130,8 +135,21 @@ ggplot() +
   theme(panel.background = element_rect(fill = "aliceblue", colour = NA))
 
 
+###Statistical Test#####
+
+bin_matrix <- embsubbin %>%
+  distinct(country, subfamily_name, bin_uri) %>% 
+  mutate(present = 1) %>%
+  pivot_wider(names_from = bin_uri, values_from = present, values_fill = 0)
+
+meta <- bin_matrix[, c("country", "subfamily_name")]
+bins_only <- bin_matrix %>% select(-country, -subfamily_name)
 
 
+permanova_result <- adonis2(bins_only ~ subfamily_name,
+                            data = meta,
+                            method = "jaccard")
+permanova_result
 
 
 
